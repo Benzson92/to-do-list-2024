@@ -2,19 +2,16 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
+## Getting Started
 
-1. Install dependencies
+To get started with the app, you need to have Node.js and Yarn installed on your computer. Once you have these installed, you can follow the steps below:
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
+1. Clone the repository to your local machine.
+2. Navigate to the project directory in your terminal.
+3. Run `yarn` to install the project dependencies.
+4. Install Expo Go on your device. (see https://expo.dev/client)
+5. Run `yarn start` to start the Expo development server.
+6. Follow the instructions in your terminal to run the app on physical device.
 
 In the output, you'll find options to open the app in a
 
