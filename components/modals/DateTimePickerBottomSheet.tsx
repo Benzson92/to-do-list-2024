@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Modal, View, StyleSheet, Pressable, Platform } from "react-native";
 import DateTimePicker, {
   DateTimePickerEvent,
+  DateTimePickerAndroid,
 } from "@react-native-community/datetimepicker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -30,12 +31,10 @@ const DateTimePickerBottomSheet: React.FC<DateTimePickerBottomSheetProps> = ({
   const insets = useSafeAreaInsets();
 
   console.log("DateTimePickerBottomSheet visible", visible);
+  console.log("DateTimePickerBottomSheet mode", mode);
 
-  const handleChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    const date = selectedDate || value;
-    setCurrentDate(date);
-
-    if (Platform.OS === "android") {
+  const handleAndroidChange = useCallback(
+    async (event: DateTimePickerEvent, selectedDate?: Date) => {
       console.log("DateTimePickerBottomSheet handleChange event", event);
       console.log(
         "DateTimePickerBottomSheet handleChange selectedDate",
@@ -46,29 +45,170 @@ const DateTimePickerBottomSheet: React.FC<DateTimePickerBottomSheetProps> = ({
         value?.toDateString()
       );
 
-      onChange(event, date);
+      if (event.type === "set") {
+        onChange(event, selectedDate);
+        // onClose();
+      }
+      // if (event.type === "dismissed") onClose();
       onClose();
+    },
+    [onChange, onClose]
+  );
 
-      return;
-    }
+  useEffect(() => {
+    const handleAndroidPicker = async () => {
+      // if (Platform.OS === "android") {
+      //   if (visible) {
+      //     DateTimePickerAndroid.open({
+      //       value,
+      //       mode,
+      //       display: "spinner",
+      //       onChange: handleAndroidChange,
+      //     });
+      //   }
+      //   //  else {
+      //   //   console.log("DateTimePickerBottomSheet handleAndroidPicker dismiss");
+
+      //   //   await DateTimePickerAndroid.dismiss(mode);
+      //   // }
+      // }
+
+      console.log(
+        "DateTimePickerBottomSheet handleAndroidPicker visible",
+        visible
+      );
+
+      if (!visible) {
+        const dismissed = await DateTimePickerAndroid.dismiss(mode);
+        console.log("DateTimePickerBottomSheet dismissed", dismissed);
+
+        // if (dismissed) {
+        //   onClose();
+        // }
+      } else
+        DateTimePickerAndroid.open({
+          value,
+          mode,
+          display: "spinner",
+          onChange: handleAndroidChange,
+        });
+    };
+
+    if (Platform.OS === "android") handleAndroidPicker();
+  }, [visible, mode, value, handleAndroidChange]);
+
+  // const handleAndroidChange = (
+  //   event: DateTimePickerEvent,
+  //   selectedDate?: Date
+  // ) => {
+  //   // const date = selectedDate || value;
+  //   // if (event.type === "set") {
+  //   //   onChange(event, date);
+  //   // }
+  //   // onClose();
+
+  //   console.log("DateTimePickerBottomSheet handleChange event", event);
+  //   console.log(
+  //     "DateTimePickerBottomSheet handleChange selectedDate",
+  //     selectedDate?.toDateString()
+  //   );
+  //   console.log(
+  //     "DateTimePickerBottomSheet handleChange value",
+  //     value?.toDateString()
+  //   );
+
+  //   if (event.type === "set") onChange(event, selectedDate);
+  //   if (event.type === "dismissed") onClose();
+  // };
+
+  const handleChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    const date = selectedDate || value;
+    setCurrentDate(date);
+
+    // if (Platform.OS === "android") {
+    //   console.log("DateTimePickerBottomSheet handleChange event", event);
+    //   console.log(
+    //     "DateTimePickerBottomSheet handleChange selectedDate",
+    //     selectedDate?.toDateString()
+    //   );
+    //   console.log(
+    //     "DateTimePickerBottomSheet handleChange value",
+    //     value?.toDateString()
+    //   );
+
+    //   if (event.type === "set") onChange(event, date);
+    //   onClose();
+
+    //   return;
+    // }
   };
 
   const handleDonePress = () => {
+    console.log(
+      "DateTimePickerBottomSheet handleDonePress currentDate",
+      currentDate?.toDateString()
+    );
+
     const event: DateTimePickerEvent = { type: "set" } as DateTimePickerEvent;
+
     onChange(event, currentDate);
     onClose();
   };
 
-  if (Platform.OS === "android" && visible) {
-    return (
-      <DateTimePicker
-        value={currentDate}
-        mode={mode}
-        display="spinner"
-        onChange={handleChange}
-      />
-    );
-  }
+  // if (Platform.OS === "android") {
+  //   console.log(
+  //     "DateTimePickerBottomSheet android currentDate",
+  //     value?.toDateString()
+  //   );
+
+  //   console.log("DateTimePickerBottomSheet android visible", visible);
+
+  //   // if (!visible) {
+  //   //   DateTimePickerAndroid.dismiss(mode);
+  //   //   return;
+  //   //   // return null;
+  //   // }
+  //   // return null;
+
+  //   // DateTimePickerAndroid.open({
+  //   //   value,
+  //   //   mode,
+  //   //   display: "spinner",
+  //   //   onChange: (event, selectedDate) => {
+  //   //     console.log("DateTimePickerBottomSheet handleChange event", event);
+  //   //     console.log(
+  //   //       "DateTimePickerBottomSheet handleChange selectedDate",
+  //   //       selectedDate?.toDateString()
+  //   //     );
+  //   //     console.log(
+  //   //       "DateTimePickerBottomSheet handleChange value",
+  //   //       value?.toDateString()
+  //   //     );
+
+  //   //     if (event.type === "set") {
+  //   //       // DateTimePickerAndroid.dismiss(mode);
+
+  //   //       onChange(event, selectedDate);
+  //   //     }
+
+  //   //     onClose();
+  //   //   },
+  //   // });
+
+  //   // return null;
+
+  //   // if (!visible) return null;
+  //   return (
+  //     <DateTimePicker
+  //       value={value}
+  //       mode={mode}
+  //       display="spinner"
+  //       onChange={handleAndroidChange}
+  //     />
+  //   );
+  // }
+
+  if (Platform.OS === "android") return null;
 
   return (
     <Modal
