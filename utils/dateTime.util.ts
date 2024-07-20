@@ -31,12 +31,6 @@ export function formatDateTime(date: string, time: string): string {
   }
 }
 
-// export function formatDateTime(date: string, time: string): string {
-//   const dateTimeString = `${date}T${time}:00`;
-//   const dateTime = parseISO(dateTimeString);
-//   return format(dateTime, "MMMM d, yyyy 'at' h:mma");
-// }
-
 export const getCurrentFormattedDate = (): string => {
   return format(new Date(), "MMMM dd, yyyy");
 };

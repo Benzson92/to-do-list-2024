@@ -1,4 +1,3 @@
-// CategorySelection.tsx
 import React from "react";
 import {
   View,
@@ -68,14 +67,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: Colors.CarbonBlack,
     marginRight: 12,
-    // marginBottom: 8,
-    // paddingHorizontal: 16,
   },
   categoryContainer: {
     flexDirection: "row",
-    // justifyContent: "space-around",
-    // marginVertical: 16,
-    // paddingHorizontal: 16,
   },
   iconWrapper: {
     marginHorizontal: 10,
@@ -90,8 +84,5 @@ const styles = StyleSheet.create({
     color: Colors.CrimsonRed,
     fontSize: 12,
     marginVertical: 8,
-    // marginTop: -8,
-    // marginBottom: 8,
-    // marginHorizontal: 16,
   },
 });

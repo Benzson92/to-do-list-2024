@@ -50,8 +50,6 @@ export default function RootLayout() {
               barStyle={"light-content"}
             />
             <Stack screenOptions={{ headerShown: false }}>
-              {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" /> */}
               <Stack.Screen name="index" options={{ title: "Home" }} />
               <Stack.Screen name="add" options={{ title: "Add Task" }} />
               <Stack.Screen name="edit/[id]" options={{ title: "Edit Task" }} />

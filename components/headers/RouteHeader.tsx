@@ -47,15 +47,11 @@ export default RouteHeader;
 const styles = StyleSheet.create({
   headerBackgroundContainer: {
     position: "relative",
-    // height: 96,
-    // marginBottom: 16,
   },
   headerContent: {
     ...StyleSheet.absoluteFillObject,
     flexDirection: "row",
     alignItems: "center",
-    // justifyContent: "space-between",
-    // paddingHorizontal: 16,
   },
   closeButton: {
     position: "absolute",

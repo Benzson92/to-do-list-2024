@@ -1,4 +1,3 @@
-// React and React Native imports
 import React from "react";
 import {
   FlatList,
@@ -8,7 +7,6 @@ import {
   ListRenderItem,
 } from "react-native";
 
-// Type imports
 import { TodoItemDTO } from "../models/todo/todo.dto";
 
 import Colors from "@/theme/colors"; // Import colors
@@ -20,8 +18,6 @@ interface TodoListProps extends FlatListProps<TodoItemDTO> {
 }
 
 const TodoList: React.FC<TodoListProps> = ({ data, renderItem, ...rest }) => {
-  console.log("TodoList data", data);
-
   return (
     <FlatList
       data={data}
@@ -36,16 +32,8 @@ const TodoList: React.FC<TodoListProps> = ({ data, renderItem, ...rest }) => {
 };
 
 const styles = StyleSheet.create({
-  list: {
-    // borderRadius: 16,
-    // overflow: "hidden",
-    // backgroundColor: Colors.GoldenYellow,
-    // flex: 1,
-  },
-  contentContainer: {
-    // paddingHorizontal: 16,
-    // paddingBottom: 16,
-  },
+  list: {},
+  contentContainer: {},
   separator: {
     height: 1,
     backgroundColor: Colors.MistGray,

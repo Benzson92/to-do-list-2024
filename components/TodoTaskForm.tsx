@@ -60,9 +60,6 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
     field: K,
     value: FormValues[K]
   ) => {
-    console.log("TodoTaskForm handleInputChange field", field);
-    console.log("TodoTaskForm handleInputChange value", value);
-
     setFormValues({
       ...formValues,
       [field]: value,
@@ -103,19 +100,11 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
   };
 
   const handlePickerClose = () => {
-    console.log("TodoTaskForm handlePickerClose");
-
     setPickerState({
       visible: false,
       mode: pickerState.mode,
     });
   };
-
-  console.log("TodoTaskForm pickerState", pickerState);
-  console.log("TodoTaskForm formValues", formValues);
-  console.log("TodoTaskForm formErrors", formErrors);
-  console.log("TodoTaskForm formValues date", formValues.date?.toISOString());
-  console.log("TodoTaskForm formValues time", formValues.time?.toISOString());
 
   return (
     <View style={styles.container}>
@@ -185,18 +174,8 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
         visible={pickerState.visible}
         mode={pickerState.mode}
         onClose={handlePickerClose}
-        onChange={(event, selectedDate) => {
-          console.log(
-            "TodoTaskForm DateTimePickerBottomSheet onChange event",
-            event
-          );
-          console.log(
-            "TodoTaskForm DateTimePickerBottomSheet onChange selectedDate",
-            selectedDate?.toDateString()
-          );
-
+        onChange={(_, selectedDate) => {
           handleInputChange(pickerState.mode, selectedDate || new Date());
-          // handlePickerClose();
         }}
         value={formValues[pickerState.mode] || new Date()}
       />

@@ -20,8 +20,6 @@ export const useTodos = () => {
   const completedTodos = useAppSelector(selectCompletedTodos);
   const todayIncompleteTodos = useAppSelector(selectTodayIncompleteTodos);
 
-  console.log("useTodos todos", todos);
-
   const getTodoById = (id: string) =>
     useAppSelector((state) => selectTodoById(id)(state));
   const getTodosByCategory = (category: TodoCategoryType) =>

@@ -1,5 +1,3 @@
-// app/components/buttons/PrimaryButton.tsx
-
 import React, { forwardRef } from "react";
 import {
   Pressable,
@@ -10,15 +8,13 @@ import {
   ViewStyle,
 } from "react-native";
 
-import Colors from "@/theme/colors"; // Import colors
+import Colors from "@/theme/colors";
 
-// Define the props for the component, extending PressableProps
 interface PrimaryButtonProps extends PressableProps {
   title: string;
   style?: StyleProp<ViewStyle>;
 }
 
-// Define the PrimaryButton component
 const PrimaryButton = forwardRef<
   React.ElementRef<typeof Pressable>,
   PrimaryButtonProps
@@ -39,12 +35,11 @@ const PrimaryButton = forwardRef<
   );
 });
 
-// Define the styles
 const styles = StyleSheet.create({
   button: {
     backgroundColor: Colors.PrimaryPurple,
-    height: 56, // Fixed height
-    justifyContent: "center", // Center the text vertically
+    height: 56,
+    justifyContent: "center",
     paddingHorizontal: 20,
     borderRadius: 50,
     alignItems: "center",
@@ -56,5 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// Export the component
 export default PrimaryButton;

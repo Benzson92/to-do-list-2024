@@ -1,12 +1,6 @@
 const Colors = {
   // Primary Colors
   PrimaryPurple: "#4A3780", // Main purple color
-  // MediumPurple: "#5D3FD3", // Main purple color (commented out)
-  // LavenderMist: "#E7E2F3", // Light purple background (commented out)
-
-  // Secondary Colors
-  // PaleYellow: "#FEF5D3", // Light yellow background
-  // AliceBlue: "#DBECF6", // Light blue background
 
   // Text Colors
   Charcoal: "#333333",

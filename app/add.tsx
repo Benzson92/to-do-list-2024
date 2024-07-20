@@ -11,14 +11,6 @@ import { FormValues, FormErrors } from "@/models/todo/todo.interface";
 import { TodoSubmitType } from "@/types/todo/todo.type";
 import { initialFormValues } from "@/constants/form.constant";
 
-// const initialFormValues: FormValues = {
-//   title: "",
-//   category: undefined,
-//   date: undefined,
-//   time: undefined,
-//   notes: undefined,
-// };
-
 const AddTaskPage = () => {
   const navigation = useNavigation();
   const { addNewTodo } = useTodos();
