@@ -1,76 +1,78 @@
 import React, { useState, useEffect } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
+import { View, StyleSheet } from "react-native";
+import isEmpty from "lodash/isEmpty";
 
-// Components
+import RouteHeader from "@/components/headers/RouteHeader";
 import TodoTaskForm from "@/components/TodoTaskForm";
 
-// Hooks
 import { useTodos } from "@/hooks/useTodos.hook";
 
-// Types and Models
-import { TodoItemDTO } from "@/models/todo/todo.dto";
-import { FormValues, FormErrors } from "@/models/todo/todo.interface";
+import { FormErrors } from "@/models/todo/todo.interface";
+import { TodoItemDTO } from "../../models/todo/todo.dto";
+
 import { TodoSubmitType } from "@/types/todo/todo.type";
+import { initialFormValues } from "@/constants/form.constant";
 
 const EditTaskPage: React.FC = () => {
   const navigation = useNavigation();
-  // const route = useRoute();
-  // const { id } = route.params as { id: string };
   const { id = "" } = useLocalSearchParams<{ id: string }>();
-
-  console.log("EditTaskPage id", id);
 
   const { getTodoById, updateTodo } = useTodos();
   const task = getTodoById(id);
 
-  const initialFormValues: FormValues = {
-    title: task?.title || "",
-    category: task?.category || undefined,
-    date: task?.date ? new Date(task.date) : undefined,
-    time: task?.time ? new Date(task.time) : undefined,
-    notes: task?.notes || "",
-  };
-
-  const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
+  const [formValues, setFormValues] = useState(initialFormValues);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
   useEffect(() => {
-    if (task) {
+    if (!isEmpty(task)) {
       setFormValues({
-        title: task.title || "",
-        category: task.category || undefined,
+        title: task.title,
+        category: task.category,
         date: task.date ? new Date(task.date) : undefined,
         time: task.time ? new Date(task.time) : undefined,
-        notes: task.notes || "",
+        notes: task.notes,
       });
     }
   }, [task]);
-
-  const handleSubmit = (data: TodoSubmitType) => {
-    if (task) {
-      updateTodo({
-        ...task,
-        ...data,
-      });
-      navigation.goBack();
-    }
-  };
 
   const handleClose = () => {
     navigation.goBack();
   };
 
+  const handleSubmit = (data: TodoSubmitType) => {
+    const updatedTask: TodoItemDTO = {
+      ...task,
+      ...data,
+      id,
+      completed: task?.completed || false,
+      createdAt: task?.createdAt || new Date().toISOString(),
+    };
+
+    updateTodo(updatedTask);
+
+    handleClose();
+  };
+
   return (
-    <TodoTaskForm
-      formValues={formValues}
-      formErrors={formErrors}
-      setFormValues={setFormValues}
-      setFormErrors={setFormErrors}
-      onSubmit={handleSubmit}
-      onClose={handleClose}
-    />
+    <View style={styles.container}>
+      <RouteHeader onClose={handleClose} title="Edit Task" />
+      <TodoTaskForm
+        formValues={formValues}
+        formErrors={formErrors}
+        setFormValues={setFormValues}
+        setFormErrors={setFormErrors}
+        onSubmit={handleSubmit}
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default EditTaskPage;

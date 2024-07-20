@@ -1,7 +1,4 @@
-// models/todo/todo.interface.ts
-
 import { TodoCategoryType, TodoSubmitType } from "@/types/todo/todo.type";
-import { TodoItemDTO } from "./todo.dto";
 
 export interface FormValues {
   title: string;
@@ -23,6 +20,5 @@ export interface TodoTaskFormProps {
   formErrors: FormErrors;
   setFormValues: React.Dispatch<React.SetStateAction<FormValues>>;
   setFormErrors: React.Dispatch<React.SetStateAction<FormErrors>>;
-  onSubmit: (data: TodoSubmitType) => void; // Using TodoSubmitType here
-  onClose: () => void;
+  onSubmit: (data: TodoSubmitType) => void;
 }

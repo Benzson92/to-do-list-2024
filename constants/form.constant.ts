@@ -1,6 +1,12 @@
-// constants/form.constant.ts
+import { FormValues, FormErrors } from "@/models/todo/todo.interface";
 
-import { FormErrors } from "../models/todo/todo.interface"; // Ensure to import FormErrors from the correct path
+export const initialFormValues: FormValues = {
+  title: "",
+  category: undefined,
+  date: undefined,
+  time: undefined,
+  notes: "",
+};
 
 export const REQUIRED_FIELDS: Array<keyof FormErrors> = [
   "title",

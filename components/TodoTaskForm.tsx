@@ -1,53 +1,40 @@
-// React and React Native imports
 import React, { useState } from "react";
 import {
   View,
   StyleSheet,
-  Text,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  useWindowDimensions,
 } from "react-native";
-import isEmpty from "lodash/isEmpty";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { formatDate, formatTime } from "../utils/dateTime.util";
+import isEmpty from "lodash/isEmpty";
 
-// Icon imports
+import { formatDate, formatTime } from "../utils/dateTime.util";
+import { capitalizeText } from "../utils/capitalizeText.util";
+
 import CalendarEventIcon from "./icons/CalendarEvent.icon";
 import DocumentIcon from "./icons/Document.icon";
 import TrophyIcon from "./icons/Trophy.icon";
 import CalendarIcon from "./icons/Calendar.icon";
-import CloseIcon from "./icons/Close.icon";
 import ClockIcon from "./icons/Clock.icon";
 
-// Theme imports
 import Colors from "@/theme/colors";
-import { capitalizeText } from "../utils/capitalizeText.util"; // Utility Function
 
-// Component imports
 import LabeledTextInput from "./inputs/LabeledTextInput";
 import DateTimeInput from "./inputs/DateTimeInput";
-
-import RouteHeader from "./headers/RouteHeader";
 import CategorySelection from "./CategorySelection";
 import PrimaryButton from "./buttons/PrimaryButton";
 import DateTimePickerBottomSheet from "./modals/DateTimePickerBottomSheet";
 
-// Types and DTOs
 import {
   FormValues,
   FormErrors,
   TodoTaskFormProps,
 } from "../models/todo/todo.interface";
 import { TodoCategoryType } from "@/types/todo/todo.type";
-import { REQUIRED_FIELDS } from "../constants/form.constant"; // Form Constants
+
+import { REQUIRED_FIELDS } from "../constants/form.constant";
 
 const categoryOptions: { type: TodoCategoryType; icon: React.FC }[] = [
   { type: "General", icon: DocumentIcon },
@@ -61,20 +48,21 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
   setFormValues,
   setFormErrors,
   onSubmit,
-  onClose,
 }) => {
   const [pickerState, setPickerState] = useState<{
     visible: boolean;
     mode: "date" | "time";
   }>({ visible: false, mode: "date" });
 
-  const { width: screenWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
   const handleInputChange = <K extends keyof FormValues>(
     field: K,
     value: FormValues[K]
   ) => {
+    console.log("TodoTaskForm handleInputChange field", field);
+    console.log("TodoTaskForm handleInputChange value", value);
+
     setFormValues({
       ...formValues,
       [field]: value,
@@ -87,23 +75,6 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
   };
 
   const handleSave = () => {
-    // const errors: FormErrors = {};
-
-    // if (!formValues.title) {
-    //   errors.title = "Title is required";
-    // }
-    // if (!formValues.category) {
-    //   errors.category = "Category is required";
-    // }
-
-    // if (!formValues.date) {
-    //   errors.date = "Date is required";
-    // }
-
-    // if (!formValues.time) {
-    //   errors.time = "Time is required";
-    // }
-
     const errors = REQUIRED_FIELDS.reduce((acc, field) => {
       if (!formValues[field]) {
         acc[field] = `${capitalizeText(field)} is required`;
@@ -132,45 +103,28 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
   };
 
   const handlePickerClose = () => {
+    console.log("TodoTaskForm handlePickerClose");
+
     setPickerState({
       visible: false,
       mode: pickerState.mode,
     });
   };
 
+  console.log("TodoTaskForm pickerState", pickerState);
+  console.log("TodoTaskForm formValues", formValues);
+  console.log("TodoTaskForm formErrors", formErrors);
+  console.log("TodoTaskForm formValues date", formValues.date?.toISOString());
+  console.log("TodoTaskForm formValues time", formValues.time?.toISOString());
+
   return (
-    <View
-      style={{ flex: 1, backgroundColor: Colors.FrostedSilver }}
-      // behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      {/* <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}> */}
-      <RouteHeader onClose={onClose} title="Add New Task" />
-      {/* <View style={styles.headerBackgroundContainer}>
-          <RouteHeaderBackground width={screenWidth} />
-          <View style={styles.headerContent}>
-            <Pressable onPress={onClose}>
-              <CloseIcon />
-            </Pressable>
-            <Text style={styles.headerText}>Add New Task</Text>
-          </View>
-        </View> */}
+    <View style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAwareScrollView
-          contentContainerStyle={{ flexGrow: 1, paddingVertical: 24 }}
+          contentContainerStyle={styles.scrollViewContainer}
           extraHeight={180}
-          // extraScrollHeight={50}
         >
-          <View style={styles.container}>
-            {/* <View style={styles.headerBackgroundContainer}>
-                <RouteHeaderBackground width={screenWidth} />
-                <View style={styles.headerContent}>
-                  <Pressable onPress={onClose}>
-                    <CloseIcon />
-                  </Pressable>
-                  <Text style={styles.headerText}>Add New Task</Text>
-                </View>
-              </View> */}
-
+          <View style={styles.innerContainer}>
             <LabeledTextInput
               label="Task Title"
               value={formValues.title}
@@ -188,29 +142,6 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
               errorMessage={formErrors.category}
               style={{ marginVertical: 24 }}
             />
-
-            {/* <Text style={styles.categoryLabel}>Category</Text>
-              <View style={styles.categoryContainer}>
-                {categoryOptions.map((option) => (
-                  <Pressable
-                    key={option.type}
-                    onPress={() => handleInputChange("category", option.type)}
-                  >
-                    <View
-                      style={[
-                        styles.iconWrapper,
-                        formValues.category === option.type &&
-                          styles.selectedIconWrapper,
-                      ]}
-                    >
-                      <option.icon />
-                    </View>
-                  </Pressable>
-                ))}
-              </View>
-              {formErrors.category && (
-                <Text style={styles.errorText}>{formErrors.category}</Text>
-              )} */}
 
             <View style={styles.dateTimeContainer}>
               <DateTimeInput
@@ -231,34 +162,6 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
               />
             </View>
 
-            {/* <Pressable
-                onPress={() => handlePickerOpen("date")}
-                style={styles.dateTimeInput}
-              >
-                <Text>
-                  {formValues.date ? formValues.date.toDateString() : "Date"}
-                </Text>
-                <CalendarIcon />
-              </Pressable>
-              {formErrors.date && (
-                <Text style={styles.errorText}>{formErrors.date}</Text>
-              )} */}
-
-            {/* <Pressable
-                onPress={() => handlePickerOpen("time")}
-                style={styles.dateTimeInput}
-              >
-                <Text>
-                  {formValues.time
-                    ? formValues.time.toLocaleTimeString()
-                    : "Time"}
-                </Text>
-                <ClockIcon />
-              </Pressable>
-              {formErrors.time && (
-                <Text style={styles.errorText}>{formErrors.time}</Text>
-              )} */}
-
             <LabeledTextInput
               label="Notes"
               value={formValues.notes}
@@ -268,12 +171,6 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
               textAlignVertical="top"
               style={styles.notesInput}
             />
-
-            {/* <PrimaryButton
-                title="Save"
-                onPress={handleSave}
-                style={styles.saveButton}
-              /> */}
           </View>
         </KeyboardAwareScrollView>
       </TouchableWithoutFeedback>
@@ -289,12 +186,20 @@ const TodoTaskForm: React.FC<TodoTaskFormProps> = ({
         mode={pickerState.mode}
         onClose={handlePickerClose}
         onChange={(event, selectedDate) => {
+          console.log(
+            "TodoTaskForm DateTimePickerBottomSheet onChange event",
+            event
+          );
+          console.log(
+            "TodoTaskForm DateTimePickerBottomSheet onChange selectedDate",
+            selectedDate?.toDateString()
+          );
+
           handleInputChange(pickerState.mode, selectedDate || new Date());
-          handlePickerClose();
+          // handlePickerClose();
         }}
         value={formValues[pickerState.mode] || new Date()}
       />
-      {/* </SafeAreaView> */}
     </View>
   );
 };
@@ -305,82 +210,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.FrostedSilver,
-    paddingHorizontal: 16,
-    paddingBottom: 16,
   },
-  headerBackgroundContainer: {
-    position: "relative",
-    height: 96,
-    marginBottom: 16,
+  scrollViewContainer: {
+    flexGrow: 1,
+    paddingVertical: 24,
   },
-  headerContent: {
-    ...StyleSheet.absoluteFillObject,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-  },
-  headerText: {
+  innerContainer: {
     flex: 1,
-    fontSize: 18,
-    fontWeight: "bold",
-    color: Colors.White,
-    textAlign: "center",
-  },
-  inputContainer: {
-    marginVertical: 8,
-  },
-  categoryLabel: {
-    fontSize: 14,
-    color: Colors.Charcoal,
-    marginBottom: 8,
     paddingHorizontal: 16,
-  },
-  categoryContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 16,
-    paddingHorizontal: 16,
-  },
-  iconWrapper: {
-    padding: 10,
-    borderRadius: 50,
-  },
-  selectedIconWrapper: {
-    backgroundColor: Colors.LilacMist,
   },
   dateTimeContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 24,
   },
-  dateTimeInput: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: Colors.White,
-    padding: 12,
-    borderRadius: 8,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
   notesInput: {
     height: 180,
-    // marginHorizontal: 16,
   },
   saveButton: {
     backgroundColor: Colors.PrimaryPurple,
     padding: 16,
-    // borderRadius: 8,
     alignItems: "center",
     marginTop: 16,
     marginHorizontal: 16,
     marginBottom: 24,
-  },
-  saveButtonText: {
-    color: Colors.White,
-    fontSize: 16,
-    fontWeight: "bold",
   },
   errorText: {
     color: Colors.CrimsonRed,

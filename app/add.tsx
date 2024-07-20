@@ -1,53 +1,58 @@
-// src/pages/AddTaskPage.tsx
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { View, StyleSheet } from "react-native";
 
-// Components
-import TodoTaskForm from "../components/TodoTaskForm";
+import RouteHeader from "@/components/headers/RouteHeader";
+import TodoTaskForm from "@/components/TodoTaskForm";
 
-import { useTodos } from "../hooks/useTodos.hook";
+import { useTodos } from "@/hooks/useTodos.hook";
 
-// Models
-import { FormValues, FormErrors } from "../models/todo/todo.interface";
-import { TodoItemDTO } from "../models/todo/todo.dto";
-
-// Types
+import { FormValues, FormErrors } from "@/models/todo/todo.interface";
 import { TodoSubmitType } from "@/types/todo/todo.type";
+import { initialFormValues } from "@/constants/form.constant";
+
+// const initialFormValues: FormValues = {
+//   title: "",
+//   category: undefined,
+//   date: undefined,
+//   time: undefined,
+//   notes: undefined,
+// };
 
 const AddTaskPage = () => {
   const navigation = useNavigation();
   const { addNewTodo } = useTodos();
 
-  const initialFormValues: FormValues = {
-    title: "",
-    category: undefined,
-    date: undefined,
-    time: undefined,
-    notes: "",
-  };
-
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
-  const handleSubmit = (data: TodoSubmitType) => {
-    addNewTodo(data);
-
-    // Handle the form submission
-    console.log("AddTaskPage handleSubmit data", data);
-    // Navigate back or to another screen after submission
+  const handleClose = () => {
     navigation.goBack();
   };
 
+  const handleSubmit = (data: TodoSubmitType) => {
+    addNewTodo(data);
+    handleClose();
+  };
+
   return (
-    <TodoTaskForm
-      formValues={formValues}
-      formErrors={formErrors}
-      setFormValues={setFormValues}
-      setFormErrors={setFormErrors}
-      onSubmit={handleSubmit}
-      onClose={() => navigation.goBack()}
-    />
+    <View style={styles.container}>
+      <RouteHeader onClose={handleClose} title="Add New Task" />
+      <TodoTaskForm
+        formValues={formValues}
+        formErrors={formErrors}
+        setFormValues={setFormValues}
+        setFormErrors={setFormErrors}
+        onSubmit={handleSubmit}
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default AddTaskPage;
