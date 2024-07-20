@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useCallback } from "react";
+import React, { useState, forwardRef, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   PressableProps,
   StyleProp,
   ViewStyle,
+  useWindowDimensions,
+  PanResponder,
 } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 
@@ -61,14 +63,78 @@ const TodoItem = forwardRef<Swipeable, TodoItemProps>(
   ) => {
     const { id, title, completed, date, time, category } = data;
     const [isSwipeOpen, setIsSwipeOpen] = useState(false);
+    const swipeActionPerformedRef = useRef(false);
+    const isSwiping = useRef(false);
+
+    const panResponder = useRef(
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, gestureState) => {
+          console.log("TodoItem onMoveShouldSetPanResponder");
+
+          // Only respond to horizontal movements
+          return Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+        },
+        onPanResponderGrant: (_, gestureState) => {
+          isSwiping.current = true;
+
+          console.log(
+            "TodoItem onPanResponderGrant gestureState",
+            gestureState
+          );
+        },
+        onPanResponderMove: (_, gestureState) => {
+          console.log("TodoItem onPanResponderMove gestureState", gestureState);
+        },
+        onPanResponderRelease: () => {
+          console.log("TodoItem onPanResponderRelease");
+
+          // Reset the swiping flag after a short delay
+          setTimeout(() => {
+            isSwiping.current = false;
+          }, 250);
+        },
+      })
+    ).current;
+
+    const { width: screenWidth } = useWindowDimensions();
+    const halfScreenWidth = screenWidth / 2;
+
+    // const handlePress = useCallback(() => {
+    //   console.log(
+    //     "TodoItem handlePress swipeActionPerformedRef",
+    //     swipeActionPerformedRef.current
+    //   );
+
+    //   if (!isSwipeOpen && !swipeActionPerformedRef.current) {
+    //     onTodoItemPress?.(id);
+    //   }
+
+    //   swipeActionPerformedRef.current = false;
+    // }, [isSwipeOpen, onTodoItemPress, id]);
 
     const handlePress = useCallback(() => {
-      console.log("TodoItem handlePress isSwipeOpen", isSwipeOpen);
+      if (!isSwiping.current && !isSwipeOpen) {
+        console.log("TodoItem handlePress - Triggering onTodoItemPress");
 
-      if (!isSwipeOpen) {
         setTimeout(() => {
-          onTodoItemPress?.(id);
+          console.log(
+            "TodoItem handlePress setTimeout - Triggering onTodoItemPress isSwipeOpen",
+            isSwipeOpen
+          );
+          console.log(
+            "TodoItem handlePress setTimeout - Triggering onTodoItemPress swipeActionPerformedRef",
+            swipeActionPerformedRef.current
+          );
+
+          if (!swipeActionPerformedRef.current) onTodoItemPress?.(id);
+
+          swipeActionPerformedRef.current = false;
+          setIsSwipeOpen(false);
         }, 500);
+      } else {
+        console.log(
+          "TodoItem handlePress - Swipe detected, not triggering press"
+        );
       }
     }, [isSwipeOpen, onTodoItemPress, id]);
 
@@ -82,15 +148,21 @@ const TodoItem = forwardRef<Swipeable, TodoItemProps>(
       </View>
     );
 
-    const handleSwipeableWillOpen = useCallback(() => {
-      console.log("TodoItem onSwipeableWillOpen");
+    const handleSwipeableWillOpen = useCallback(
+      (direction: "left" | "right") => {
+        console.log("TodoItem onSwipeableWillOpen direction", direction);
 
-      setIsSwipeOpen(true);
-    }, []);
+        setIsSwipeOpen(true);
+        swipeActionPerformedRef.current = true;
+      },
+      []
+    );
 
     const handleSwipeableOpen = useCallback(
       (direction: "left" | "right") => {
-        console.log("TodoItem onSwipeableOpen", direction);
+        console.log("TodoItem onSwipeableOpen direction", direction);
+
+        // swipeActionPerformedRef.current = true;
 
         if (direction === "right") {
           console.log("TodoItem onSwipeableOpen Swiped left");
@@ -101,7 +173,20 @@ const TodoItem = forwardRef<Swipeable, TodoItemProps>(
     );
 
     const handleSwipeableClose = useCallback(() => {
-      setIsSwipeOpen(false);
+      setTimeout(() => {
+        console.log(
+          "TodoItem onSwipeableClose isSwipeOpen setTimeout",
+          isSwipeOpen
+        );
+        console.log(
+          "TodoItem onSwipeableClose swipeActionPerformedRef setTimeout",
+          swipeActionPerformedRef.current
+        );
+
+        // setIsSwipeOpen(false);
+      }, 500);
+
+      console.log("TodoItem onSwipeableClose");
     }, []);
 
     return (
@@ -109,16 +194,34 @@ const TodoItem = forwardRef<Swipeable, TodoItemProps>(
         ref={ref}
         renderRightActions={renderRightActions}
         onSwipeableWillOpen={handleSwipeableWillOpen}
+        onSwipeableWillClose={() => {
+          console.log("TodoItem onSwipeableWillClose");
+        }}
         onSwipeableOpen={handleSwipeableOpen}
         onSwipeableClose={handleSwipeableClose}
         containerStyle={[
           { backgroundColor: Colors.CrimsonRed },
           containerStyle,
         ]}
-        // rightThreshold={1}
-        // dragOffsetFromRightEdge={4}
+        rightThreshold={1}
+        dragOffsetFromRightEdge={halfScreenWidth}
       >
-        <Pressable onPress={handlePress} style={styles.container} {...rest}>
+        <Pressable
+          {...panResponder.panHandlers}
+          unstable_pressDelay={500}
+          onPressIn={() => {
+            console.log("TodoItem onPressIn");
+          }}
+          onPressOut={() => {
+            console.log("TodoItem onPressOut");
+          }}
+          onLongPress={() => {
+            console.log("TodoItem onLongPress");
+          }}
+          onPress={handlePress}
+          style={styles.container}
+          {...rest}
+        >
           <View
             style={[
               {
