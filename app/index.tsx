@@ -16,8 +16,8 @@ import { useTodos } from "../hooks/useTodos.hook";
 import TodoList from "../components/TodoList";
 import TodoItem from "../components/TodoItem";
 import PrimaryButton from "../components/buttons/PrimaryButton";
-import HomeHeaderBackground from "../components/headers/HomeHeaderBackground";
-import WelcomeCats from "../components/icons/WelcomeCats.icon"; // Import the WelcomeCats component
+import WelcomeCats from "../components/icons/WelcomeCats.icon";
+import HomeHeader from "../components/headers/HomeHeader";
 
 import { getCurrentFormattedDate } from "../utils/dateTime.util";
 
@@ -32,8 +32,6 @@ const HomePage: React.FC = () => {
   const insets = useSafeAreaInsets();
 
   const currentDate = getCurrentFormattedDate();
-
-  const headerBackgroundHeight = 222 + insets.top;
 
   const handleTodoItemPress = (id: string) => {
     router.navigate(`/edit/${id}`);
@@ -63,23 +61,7 @@ const HomePage: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerBackgroundContainer}>
-        <HomeHeaderBackground
-          width={screenWidth}
-          height={headerBackgroundHeight}
-        />
-        <View
-          style={[
-            styles.headerContent,
-            {
-              top: insets.top,
-            },
-          ]}
-        >
-          <Text style={styles.dateText}>{currentDate}</Text>
-          <Text style={styles.headerText}>My Todo List</Text>
-        </View>
-      </View>
+      <HomeHeader currentDate={currentDate} />
       <View style={[styles.content, { paddingBottom: insets.bottom }]}>
         <ScrollView
           contentContainerStyle={styles.scrollViewContent}
@@ -135,26 +117,6 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     paddingHorizontal: 16,
-  },
-  headerBackgroundContainer: {
-    position: "relative",
-  },
-  headerContent: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  headerText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    color: Colors.White,
-    textAlign: "center",
-    marginTop: 36,
-  },
-  dateText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: Colors.White,
-    textAlign: "center",
-    marginTop: 24,
   },
   content: {
     backgroundColor: Colors.FrostedSilver,
