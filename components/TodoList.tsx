@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -31,6 +31,8 @@ const TodoList: React.FC<TodoListProps> = ({ data, renderItem, ...rest }) => {
   );
 };
 
+export default memo(TodoList);
+
 const styles = StyleSheet.create({
   list: {},
   contentContainer: {},
@@ -39,5 +41,3 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.MistGray,
   },
 });
-
-export default TodoList;

@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useRef } from "react";
+import React, { forwardRef, useCallback, useRef, memo } from "react";
 import {
   View,
   Text,
@@ -139,6 +139,8 @@ const TodoItem = forwardRef<Swipeable, TodoItemProps>(
   }
 );
 
+export default memo(TodoItem);
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
@@ -199,5 +201,3 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
-export default TodoItem;
